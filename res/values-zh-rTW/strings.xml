@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">PalmBook閱讀器</string>
+	<string name="menu_text_size">字體大小</string>
+	<string name="default_charset">預設編碼</string>
+	<string name="menu_top">到頁首</string>
+	<string name="menu_charset">編碼</string>
+	<string name="menu_lock">螢幕不固定</string>
+	<string name="menu_unlock">螢幕固定</string>
+	<string name="menu_format">格式</string>
+	<string name="menu_brightness">亮度</string>
+	<string name="menu_sync">同步SD</string>
+	<string name="msg_sync_sd">搜尋sd卡上的pdb檔案...</string>
+	<string name="menu_sort">排序</string>
+		<string name="menu_about">關於</string>
+	<string name="msg_brightness">亮度設定</string>
+	<string name="msg_expired">應用程式到期,請更新...</string>
+		<string name="msg_store">閱讀狀態已儲存</string>
+	<string name="prev">上一頁</string>
+	<string name="next">下一頁</string>
+	<string name="sortby">排序依據...</string>
+	<string name="hint_filter">搜尋....書名或作者</string>
+	<string name="text_author">作者</string>
+	<string name="text_name">書名</string>
+	<string name="text_checked">我的最愛</string>
+	<string name="dialog_edit">編輯書本資訊</string>
+
+	
+</resources>

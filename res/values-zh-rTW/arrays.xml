@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="format">
+	    <item>一般內文</item>
+		<item>壓縮內文</item>
+		<item>Palm Doc</item>
+	</string-array>
+
+	<string-array name="menu_dialog_items">
+		<item>編輯</item>
+		<item>丟棄</item>
+	</string-array>
+	
+		<string-array name="sort_dialog_item">
+		<item>書名</item>
+		<item>作者</item>
+		<item>最近閱讀</item>
+		<item>檔案路徑</item>
+	</string-array>
+	
+</resources>

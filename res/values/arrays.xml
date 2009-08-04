@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="charset">
+		<item>Big5</item>
+		<item>US-ASCII</item>
+		<item>ISO-8859-1</item>
+		<item>ISO-8859-2</item>
+		<item>ISO-8859-4</item>
+		<item>ISO-8859-5</item>
+		<item>ISO-8859-7</item>
+		<item>ISO-8859-9</item>
+		<item>ISO-8859-13</item>
+		<item>ISO-8859-15</item>
+		<item>Big5-HKSCS</item>
+		<item>EUC-JP</item>
+		<item>EUC-KR</item>
+		<item>GB18030</item>
+		<item>GB2312</item>
+		<item>GBK</item>
+		<item>UTF-8</item>
+		<item>UTF-16</item>
+		<item>KOI8-R</item>
+	</string-array>
+
+	<string-array name="format">
+		<item>Uncompressed Text</item>
+		<item>Compressed Text</item>
+		<item>Palm Doc</item>
+	</string-array>
+
+	<string-array name="menu_dialog_items">
+		<item>Edit</item>
+		<item>Drop</item>
+	</string-array>
+
+	<string-array name="sort_dialog_item">
+		<item>Name</item>
+		<item>Author</item>
+		<item>Recently Read</item>
+		<item>File Path</item>
+	</string-array>
+
+</resources>

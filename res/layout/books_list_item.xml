@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:padding="5dip">
+	<TextView android:id="@+id/book_name" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:textSize="20sp"
+		android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+		android:layout_marginLeft="10dip"  android:singleLine="true" android:ellipsize="marquee"
+		android:textColor="#ffffffff"/>
+	<TextView android:id="@+id/book_author" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:textSize="14sp"
+		android:layout_alignLeft="@id/book_name" android:layout_below="@id/book_name"
+		android:textColor="#ffcccccc"
+		android:layout_marginRight="20dip"/>
+	<TextView android:id="@+id/file_path" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:textSize="14sp"
+        android:layout_alignTop="@id/book_author"
+		android:layout_toRightOf="@id/book_author"
+		android:singleLine="true" android:ellipsize="marquee"
+		android:textColor="#ffcccccc"/>
+
+</RelativeLayout>

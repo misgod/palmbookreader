@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<ScrollView android:id="@+id/scrollview"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:fadingEdge="none">
+		<RelativeLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+
+			<RelativeLayout android:layout_width="fill_parent"
+				android:layout_height="60dip" android:id="@+id/top_panel"
+				android:layout_alignParentTop="true" android:background="#ff333333">
+				<Button android:id="@+id/prev_button" android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentLeft="true"
+					android:layout_centerVertical="true" android:layout_marginLeft="10dip"
+					android:text="@string/prev" android:nextFocusDown="@id/scrollview" />
+				<Button android:id="@+id/next_button" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_centerVertical="true"
+					android:layout_alignParentRight="true" android:layout_marginRight="10dip"
+					android:nextFocusDown="@id/scrollview" android:text="@string/next" />
+				<TextView android:id="@+id/page_title"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:singleLine="true" android:gravity="center"
+					android:layout_toLeftOf="@id/next_button" android:textColor="#ffffffff"
+					android:layout_toRightOf="@id/prev_button" android:layout_alignTop="@id/next_button"
+					android:ellipsize="marquee" android:marqueeRepeatLimit="marquee_forever" />
+				<TextView android:id="@+id/page_index"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:singleLine="true" android:gravity="center"
+					android:layout_toLeftOf="@id/next_button" android:textColor="#ffffffff"
+					android:layout_toRightOf="@id/prev_button" android:layout_below="@id/page_title" />
+			</RelativeLayout>
+
+
+			<TextView android:id="@+id/text" android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:layout_marginTop="10dip"
+				android:layout_below="@id/top_panel" />
+		</RelativeLayout>
+	</ScrollView>
+
+	<ZoomControls android:id="@+id/zoom_control"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true" />
+</RelativeLayout>
