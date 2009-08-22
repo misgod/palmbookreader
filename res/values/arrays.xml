@@ -20,6 +20,18 @@
 		<item>UTF-8</item>
 		<item>UTF-16</item>
 		<item>KOI8-R</item>
+		<item>UTF-16BE</item>
+		<item>UTF-16LE</item>
+		<item>windows-1250</item>
+		<item>windows-1251</item>
+		<item>windows-1252</item>
+		<item>windows-1253</item>
+		<item>windows-1254</item>
+		<item>windows-1255</item>
+		<item>windows-1256</item>
+		<item>windows-1257</item>
+		<item>windows-1258</item>
+		<item>windows-31j</item>
 	</string-array>
 
 	<string-array name="format">
@@ -39,5 +51,8 @@
 		<item>Recently Read</item>
 		<item>File Path</item>
 	</string-array>
+
+
+
 
 </resources>

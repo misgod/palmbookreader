@@ -10,6 +10,7 @@
 	<string name="menu_format">格式</string>
 	<string name="menu_brightness">亮度</string>
 	<string name="menu_sync">同步SD</string>
+		<string name="menu_color">顏色</string>
 	<string name="msg_sync_sd">搜尋sd卡上的pdb檔案...</string>
 	<string name="menu_sort">排序</string>
 		<string name="menu_about">關於</string>
@@ -25,5 +26,5 @@
 	<string name="text_checked">我的最愛</string>
 	<string name="dialog_edit">編輯書本資訊</string>
 
-	
+		<string name="choose_color">你喜歡哪個顏色??</string>
 </resources>

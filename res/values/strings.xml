@@ -12,11 +12,13 @@
 	<string name="menu_brightness">Brightness</string>
 	<string name="menu_sort">Sort</string>
 	<string name="menu_about">About</string>
+	<string name="menu_color">Color</string>
+
 	<string name="msg_sync_sd">Search pdb file in sd card...</string>
 	<string name="msg_brightness">Brightness of this book</string>
 	<string name="msg_expired">This app is expired, please upgrade...</string>
 	<string name="msg_store">The book's status is saved...</string>
-	
+
 	<string name="prev">prev</string>
 	<string name="next">next</string>
 	<string name="sortby">Sort By...</string>
@@ -27,6 +29,6 @@
 	<string name="dialog_edit">Edit book info</string>
 	<string name="dialog_about">About...</string>
 
-	
-	
+	<string name="choose_color">Which color is your favorite?</string>
+
 </resources>
