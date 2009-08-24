@@ -33,6 +33,11 @@ public class DBUtil {
 
     }
 
+    public static void clearAllBooks(Context context) {
+        context.getContentResolver().delete(BookColumn.CONTENT_URI, null, null);
+    }
+    
+    
 
     public static boolean isExits(Context context, File path) {
         String pathOption = BookColumn.PATH + " = '" + path.getAbsolutePath()

@@ -11,6 +11,13 @@
 		<item>丟棄</item>
 	</string-array>
 	
+			<string-array name="menu_sync_items">
+		<item>SD卡全部檔案</item>
+		<item>只有"ebooks"目錄</item>
+				<item>清除列表</item>
+	</string-array>
+	
+	
 		<string-array name="sort_dialog_item">
 		<item>書名</item>
 		<item>作者</item>

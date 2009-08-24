@@ -13,6 +13,7 @@
 		<string name="menu_color">顏色</string>
 	<string name="msg_sync_sd">搜尋sd卡上的pdb檔案...</string>
 	<string name="menu_sort">排序</string>
+		<string name="menu_drop_all">清除書櫃</string>
 		<string name="menu_about">關於</string>
 	<string name="msg_brightness">亮度設定</string>
 	<string name="msg_expired">應用程式到期,請更新...</string>
@@ -25,6 +26,6 @@
 	<string name="text_name">書名</string>
 	<string name="text_checked">我的最愛</string>
 	<string name="dialog_edit">編輯書本資訊</string>
-
+	<string name="msg_need_folder">你需要在SD上建立"ebooks"目錄,並把書放進去</string>
 		<string name="choose_color">你喜歡哪個顏色??</string>
 </resources>

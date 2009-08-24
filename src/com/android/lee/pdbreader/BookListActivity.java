@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -32,12 +33,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.android.lee.pdbreader.provider.BookColumn;
 import com.android.lee.pdbreader.util.Constatnts;
+import com.android.lee.pdbreader.util.DBUtil;
 import com.android.lee.pdbreader.util.SyncAgent;
+
+import java.io.Externalizable;
+import java.io.File;
 
 public class BookListActivity extends ListActivity {
 
@@ -49,6 +55,7 @@ public class BookListActivity extends ListActivity {
     private static final int SORT_DIALOG = 4;
     private static final int EDIT_DIALOG = 5;
     private static final int ABOUT_DIALOG = 6;
+    private static final int SYNC_DIALOG = 7;
     private int selectedIndex;
 
     private static final int SORT_NAME = 0;
@@ -83,9 +90,9 @@ public class BookListActivity extends ListActivity {
         list.setOnItemClickListener(mAdapter);
         list.setOnItemLongClickListener(mAdapter);
 
-//        if (!CheckUtil.checkAvailiable()) {
-//            showDialog(EXPIRED_DIALOG);
-//        }
+        // if (!CheckUtil.checkAvailiable()) {
+        // showDialog(EXPIRED_DIALOG);
+        // }
 
         SharedPreferences pref = getSharedPreferences(Constatnts.PREF_TAG,
                 Context.MODE_PRIVATE);
@@ -288,20 +295,20 @@ public class BookListActivity extends ListActivity {
         menu.add(0, MENU_CHARSET, MENU_CHARSET, R.string.menu_charset);
         menu.add(0, MENU_SORT, MENU_SORT, R.string.menu_sort);
         menu.add(0, MENU_ABOUT, MENU_ABOUT, R.string.menu_about);
+
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(MENU_SYCN);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == MENU_SYCN) {
-            showDialog(PROGRESS_DIALOG);
-            new Thread() {
-                public void run() {
-                    SyncAgent syncAgent = new SyncAgent();
-                    syncAgent.syncSD(BookListActivity.this);
-                    dismissDialog(PROGRESS_DIALOG);
-                }
-            }.start();
+            showDialog(SYNC_DIALOG);
         } else if (item.getItemId() == MENU_CHARSET) {
             showDialog(ENCODE_DIALOG);
         } else if (item.getItemId() == MENU_SORT) {
@@ -333,7 +340,7 @@ public class BookListActivity extends ListActivity {
                             editor.commit();
                             dialog.dismiss();
                             SyncAgent agent = new SyncAgent();
-                            agent.syncSD(BookListActivity.this);
+                            agent.syncSD(BookListActivity.this,new File("/sdcard"));
                         }
                     }).create();
 
@@ -450,6 +457,43 @@ public class BookListActivity extends ListActivity {
                     .setView(aboutView)
                     .setNeutralButton(android.R.string.ok, null).create();
 
+            
+        case SYNC_DIALOG:
+            return new AlertDialog.Builder(this).setTitle(R.string.sortby)
+                    .setItems(R.array.menu_sync_items,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+                                    File f;
+                                    if(whichButton<2){
+                                        if(whichButton==0){
+                                            f = new File("/sdcard");
+                                        }else{
+                                            f = new File("/sdcard/ebooks");
+                                        }
+                                        if(f.exists()){
+                                            showDialog(PROGRESS_DIALOG);
+                                            new Thread() {
+                                                public void run() {
+                                                    SyncAgent syncAgent = new SyncAgent();
+                                                    syncAgent.syncSD(BookListActivity.this,new File("/sdcard"));
+                                                    dismissDialog(PROGRESS_DIALOG);
+                                                }
+                                            }.start();
+                                        }else{
+                                            Toast.makeText(BookListActivity.this, R.string.msg_need_folder, 5000).show();
+                                        }
+                                    }else{
+                                        DBUtil.clearAllBooks(BookListActivity.this); 
+                                    }
+                                   
+                                   
+                                    dialog.dismiss();
+                                }
+                            }).create();
+            
+            
+            
         }
         return null;
     }

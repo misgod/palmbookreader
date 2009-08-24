@@ -19,8 +19,8 @@ public class SyncAgent {
     private static final String TAG = "SyncAgent";
     private ArrayList<File> pdbFileList = new  ArrayList<File>();
     
-    public  void syncSD(Context context){
-        scanFile(new File("/sdcard"));
+    public  void syncSD(Context context,File path){
+        scanFile(path);
         SharedPreferences pref = context.getSharedPreferences(Constatnts.PREF_TAG, Context.MODE_PRIVATE);
         int charset = pref.getInt(Constatnts.DEFAULT_ENCODE, 0);
         
