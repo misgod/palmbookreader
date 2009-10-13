@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -23,13 +24,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ZoomControls;
 
-import com.android.lee.pdbreader.pdb.PDBBookInfo;
+import com.android.lee.pdbreader.pdb.AbstractBookInfo;
 import com.android.lee.pdbreader.provider.BookColumn;
 import com.android.lee.pdbreader.util.ColorUtil;
 import com.android.lee.pdbreader.util.Constatnts;
@@ -45,14 +45,16 @@ public class PalmBookReaderActivity extends Activity implements
     private static final int REQUEST_COLOR = 0x123;
 
     private ZoomControls zoomControl;
-    private PDBBookInfo mBook;
+    private AbstractBookInfo mBook;
 
-
+    private View mBottomNext;
     private TextView mBody;
     private View topPanel;
     private ScrollView scrollview;
 
     private ColorUtil colorUtil;
+
+    private Handler pHandler;
 
     /** Called when the activity is first created. */
     @Override
@@ -62,8 +64,7 @@ public class PalmBookReaderActivity extends Activity implements
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.bookreader);
 
-
-
+        setProgressBarIndeterminate(true);
         long id = getIntent().getExtras().getLong("ID");
         Uri pdbUri = Uri.parse(BookColumn.CONTENT_URI + "/" + id);
         Cursor cursor = getContentResolver().query(
@@ -77,6 +78,7 @@ public class PalmBookReaderActivity extends Activity implements
 
         String path = "";
         String encode = null;
+        String name = null;
         int format = 0;
         int lastPage = 0;
         int lastOffset = 0;
@@ -88,19 +90,26 @@ public class PalmBookReaderActivity extends Activity implements
             int formatIdx = cursor.getColumnIndexOrThrow(BookColumn.FORMAT);
             int offsetIdx = cursor
                     .getColumnIndexOrThrow(BookColumn.LAST_OFFSET);
+            int nameIdx = cursor.getColumnIndexOrThrow(BookColumn.NAME);
+
             path = cursor.getString(pathIdx);
             encode = cursor.getString(encodeIdx);
             lastPage = cursor.getInt(lastpageIdx);
             format = cursor.getInt(formatIdx);
             lastOffset = cursor.getInt(offsetIdx);
+            name = cursor.getString(nameIdx);
         }
         cursor.close();
 
-        mBook = new PDBBookInfo(id);
+        File f = new File(path);
+        mBook = AbstractBookInfo.newBookInfo(f, id);
         try {
-            mBook.setFile(new File(path), encode);
+            mBook.setEncode(encode);
             mBook.setFormat(format);
+            mBook.setFile(f);
+
             mBook.setPage(lastPage);
+            mBook.setName(name);
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);
         }
@@ -110,13 +119,12 @@ public class PalmBookReaderActivity extends Activity implements
         topPanel = findViewById(R.id.top_panel);
 
 
-        
+
         mBody = (TextView) findViewById(R.id.text);
         mBody.setFocusable(false);
-      
-        
-        
-        
+
+
+
         TextView pageTitle = (TextView) findViewById(R.id.page_title);
         TextView pageTitle1 = (TextView) findViewById(R.id.page_title1);
         pageTitle.setText(mBook.mName);
@@ -136,9 +144,9 @@ public class PalmBookReaderActivity extends Activity implements
 
         View prevButton1 = findViewById(R.id.prev_button1);
         prevButton1.setOnClickListener(this);
-        View nextButton1 = findViewById(R.id.next_button1);
-        nextButton1.setOnClickListener(this);
-        
+        mBottomNext = findViewById(R.id.next_button1);
+        mBottomNext.setOnClickListener(this);
+
 
         zoomControl = (ZoomControls) findViewById(R.id.zoom_control);
         zoomControl.hide();
@@ -171,6 +179,11 @@ public class PalmBookReaderActivity extends Activity implements
             public boolean onTouch(View view, MotionEvent motionevent) {
                 switch (motionevent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    if (mBottomNext.isFocusable()) {
+                        mBottomNext.setFocusable(false);
+                    }
+
+
                     if (zoomControl.isShown()) {
                         SharedPreferences pref = getSharedPreferences(
                                 Constatnts.PREF_TAG, Context.MODE_PRIVATE);
@@ -189,6 +202,12 @@ public class PalmBookReaderActivity extends Activity implements
                 return false;
             }
         });
+
+        HandlerThread thread = new HandlerThread("reader");
+        thread.start();
+        pHandler = new Handler(thread.getLooper());
+
+
         doShow(lastOffset);
         SharedPreferences pref = getSharedPreferences(Constatnts.PREF_TAG,
                 Context.MODE_PRIVATE);
@@ -197,23 +216,44 @@ public class PalmBookReaderActivity extends Activity implements
 
         colorUtil = new ColorUtil(this);
         changeColor(-1); // use pref
+
+
+
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            int oldX = scrollview.getScrollY();
             scrollview.scrollBy(0, (scrollview.getHeight() - mBody
                     .getLineHeight()));
+
+
+            int newX = scrollview.getScrollY();
+
+
+            if (oldX == newX) {
+                mBottomNext.setFocusable(true);
+                mBottomNext.requestFocus();
+            }
+
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            if (mBottomNext.isFocusable()) {
+                mBottomNext.setFocusable(false);
+            }
+
             scrollview.scrollBy(0, -(scrollview.getHeight() - mBody
                     .getLineHeight()));
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            if (mBottomNext.isFocusable()) {
+                mBottomNext.setFocusable(false);
+            }
             scrollview.fullScroll(View.FOCUS_UP);
             return true;
         }
 
-        
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -247,6 +287,9 @@ public class PalmBookReaderActivity extends Activity implements
         } else {
             rotationIgtem.setTitle(R.string.menu_unlock);
         }
+
+        MenuItem formatItem = menu.getItem(MENU_FORMAT);
+        formatItem.setEnabled(mBook.supportFormat());
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -283,35 +326,61 @@ public class PalmBookReaderActivity extends Activity implements
     }
 
 
-    private void setPageTitle(){
+    private void setPageTitle() {
         TextView pageview = (TextView) findViewById(R.id.page_index);
         TextView pageview1 = (TextView) findViewById(R.id.page_index1);
-        
-        pageview.setText((mBook.mPage + 1) + " of " + mBook.mCount);
+
+        pageview.setText((mBook.mPage + 1) + " of " + mBook.getPageCount());
         pageview1.setText(pageview.getText());
     }
-    
+
 
     private void doShow(final int offset) {
-        try {
-            mBody.setText(mBook.getText());
-            if (offset > 0) {
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        int line = mBody.getLayout().getLineForOffset(offset);
-                        int scollY = topPanel.getHeight() + line
-                                * mBody.getLineHeight();
-                        scrollview.scrollTo(0, scollY);
-                    }
-                }, 50);
+        showProgressBarVisibility(true);
+        mBody.setText("");
+        pHandler.post(new Runnable() {
+            public void run() {
+                
+                try {
+                    final CharSequence txt = mBook.getText();
+
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            try {
+                                mBody.setText(txt);
+                                if (offset > 0) {
+                                    new Handler().postDelayed(new Runnable() {
+                                        public void run() {
+                                            int line = mBody.getLayout()
+                                                    .getLineForOffset(offset);
+                                            int scollY = topPanel.getHeight()
+                                                    + line * mBody.getLineHeight();
+                                            scrollview.scrollTo(0, scollY);
+                                        }
+                                    }, 50);
+                                }
+                                setPageTitle();
+                            }finally{
+                                showProgressBarVisibility(false);
+                            }
+                            
+                          
+                        }
+                    });
+
+                } catch (Exception e) {
+                    Log.d(TAG, e.getMessage(), e);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            showProgressBarVisibility(false);
+                        }
+                    });                  
+                }
 
             }
+        });
 
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage(), e);
-        }
 
-        setPageTitle();
 
     }
 
@@ -326,7 +395,11 @@ public class PalmBookReaderActivity extends Activity implements
     }
 
 
-
+    public final void showProgressBarVisibility(boolean visible) {
+        findViewById(R.id.progress_read).setVisibility(visible ? View.VISIBLE:View.GONE);
+    }
+    
+    
     protected void onDestroy() {
         int y = Math.max(0, scrollview.getScrollY() - topPanel.getHeight());
         int line = y / mBody.getLineHeight();
@@ -350,6 +423,7 @@ public class PalmBookReaderActivity extends Activity implements
         // }
 
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        pHandler.getLooper().quit();
         super.onDestroy();
 
     }
@@ -382,7 +456,8 @@ public class PalmBookReaderActivity extends Activity implements
                             try {
                                 mBody.setText("");
                                 int page = mBook.mPage;
-                                mBook.setFile(mBook.mFile, encode);
+                                mBook.setEncode(encode);
+                                mBook.setFile(mBook.mFile);
 
                                 mBook.setPage(page);
                                 mBody.setText(mBook.getText());
@@ -400,15 +475,15 @@ public class PalmBookReaderActivity extends Activity implements
                     R.array.format, mBook.mFormat,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-//                            String encode = PalmBookReaderActivity.this
-//                                    .getResources().getStringArray(
-//                                            R.array.charset)[which];
+                            // String encode = PalmBookReaderActivity.this
+                            // .getResources().getStringArray(
+                            // R.array.charset)[which];
                             try {
                                 mBody.setText("");
                                 int page = mBook.mPage;
-                                mBook.setFile(mBook.mFile, mBook.mEncode);
+                                mBook.setFile(mBook.mFile);
                                 mBook.setFormat(which);
-                                mBook.setPage(page);
+                                mBook.setPage(page);                           
                                 mBody.setText(mBook.getText());
                             } catch (Exception e) {
                                 Log.e(TAG, e.getMessage(), e);
@@ -427,7 +502,6 @@ public class PalmBookReaderActivity extends Activity implements
         return null;
     }
 
-
     private void changeColor(int index) {
         int[] color = colorUtil.getColor(index); // use pref
         mBody.setTextColor(color[0]);
@@ -441,16 +515,25 @@ public class PalmBookReaderActivity extends Activity implements
             if (mBook.hasPrevPage()) {
                 mBody.setText("");
                 mBook.prevPage();
+                if (mBook.isProgressing()) {
+                    mBook.stop();
+                }
                 doShow(0);
-                scrollview.scrollTo(0,0);
+                if (mBottomNext.isFocusable()) {
+                    mBottomNext.setFocusable(false);
+                }
+                scrollview.scrollTo(0, 0);
             }
         } else if (view.getId() == R.id.next_button
                 || view.getId() == R.id.next_button1) {
             if (mBook.hasNextPage()) {
                 mBody.setText("");
                 mBook.nextPage();
+                if (mBottomNext.isFocusable()) {
+                    mBottomNext.setFocusable(false);
+                }
                 doShow(0);
-                scrollview.scrollTo(0,0);
+                scrollview.scrollTo(0, 0);
             }
         }
     }

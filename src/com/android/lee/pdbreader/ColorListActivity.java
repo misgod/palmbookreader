@@ -109,8 +109,6 @@ public class ColorListActivity extends ListActivity {
             }
             if (convertView instanceof TextView) {
                 TextView tv = (TextView) convertView;
-                Log.d("Sam", "color=" + mColorList[position].foreground + ","
-                        + mColorList[position].background);
                 tv.setTextColor(mColorList[position].foreground);
                 tv.setBackgroundColor(mColorList[position].background);
             }

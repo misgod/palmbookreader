@@ -26,31 +26,25 @@ import java.util.zip.InflaterInputStream;
  * char type[4]; char creator[4]; DWord id_seed; DWord nextRecordList; Word
  * numRecords; };
  */
-public class PDBBookInfo {
-    public long mID;
-    public String mName;
+public class PDBBookInfo extends AbstractBookInfo {
     public int mCount;
-    public int mPage;
-    public File mFile;
     public int[] mRecodeOffset;
-    public String mEncode;
-    public  int mFormat;
+    public boolean isProgressing;
+
     public PDBBookInfo(long id){
-        mID = id;
+        super(id);
     }
 
-    public void setEncode( String encode){;
-        mEncode = encode;
-    }
-    public void setFile(File pdb, String encode) throws IOException {
+    @Override
+    public void setFile(File pdb) throws IOException {
         mFile = pdb;
-        mEncode = encode;
+
         mPage = 0;
         FileChannel channel = new FileInputStream(pdb).getChannel();
 
         byte[] nameByte = new byte[32];
         channel.map(MapMode.READ_ONLY, 0, 32).get(nameByte);
-        mName = new String(nameByte, encode).replace('_',' ').trim();
+        mName = new String(nameByte, mEncode).replace('_',' ').trim();
 
         mCount = channel.map(MapMode.READ_ONLY, 76, 2).asCharBuffer().get();
 
@@ -66,37 +60,32 @@ public class PDBBookInfo {
         
 
     }
-    
-    public void setFormat(int format){
-        mFormat  =  format;    
+   
+    @Override
+    public int getPageCount() {
+        return mCount;
     }
     
-
-    public void setPage(int page) {
-        mPage = page;
+    boolean isStop;
+    public  void stop(){
+        isStop = true;
     }
-
-    public boolean hasNextPage() {
-        return mPage< mCount-1;
+    
+    public  boolean isProgressing(){
+        return isProgressing;
     }
-
-    public boolean hasPrevPage() {
-        return mPage > 0;
-    }
-
-    public void nextPage() {
-        setPage(mPage + 1);
-    }
-
-    public void prevPage() {
-        setPage(mPage - 1);
-    }
-
+    
+    
     public String getText() throws IOException, DataFormatException {
-        if(mFormat <2){
-            return getMyText();
-        }else{
-            return getPalmDoc();
+        isProgressing = true;
+        try{
+            if(mFormat <2){
+                return getMyText();
+            }else{
+                return getPalmDoc();
+            }
+        }finally{
+            isProgressing = false;
         }
     }
     
@@ -122,6 +111,11 @@ public class PDBBookInfo {
                 while((c = input.read(ttt))>0){
                     String str = new String(ttt,0,c, mEncode);
                     body.append(replaceString(str));
+                    if(isStop){
+                        isStop = false;
+                        break;
+                    }
+                    
                 }
                 input.close();
             }else{
@@ -134,6 +128,10 @@ public class PDBBookInfo {
             while ((idx = channel.read(bodyBuffer)) > 0) {
                 String str = new String(bodyBuffer.array(), mEncode);
                 body.append(str);
+                if(isStop){
+                    isStop = false;
+                    break;
+                }
             }
         }
         channel.close();
@@ -147,6 +145,7 @@ public class PDBBookInfo {
     
     public String getPalmDoc() throws IOException, DataFormatException {
         PalmDocDB palmDoc = new PalmDocDB(mFile,mEncode);
+        mCount = palmDoc.getNumDataRecords();
         String result = palmDoc.readTextRecord(mPage);
         palmDoc.close();
         return result;
@@ -228,5 +227,11 @@ public class PDBBookInfo {
         channel.close();
         return result;
     }
-    
+
+    @Override
+    public boolean supportFormat() {
+        return true;
+    }
+
+
 }

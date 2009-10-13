@@ -40,6 +40,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import com.android.lee.pdbreader.provider.BookColumn;
 import com.android.lee.pdbreader.util.Constatnts;
 import com.android.lee.pdbreader.util.DBUtil;
+import com.android.lee.pdbreader.util.SDCardUtil;
 import com.android.lee.pdbreader.util.SyncAgent;
 
 import java.io.Externalizable;
@@ -114,7 +115,17 @@ public class BookListActivity extends ListActivity {
         });
     }
 
-
+    protected void onResume(){
+        super.onResume();
+        SDCardUtil.addListener(this);
+    }
+    
+    protected void onPause(){
+        super.onResume();
+        SDCardUtil.removeListener(this);
+    }
+    
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -340,7 +351,7 @@ public class BookListActivity extends ListActivity {
                             editor.commit();
                             dialog.dismiss();
                             SyncAgent agent = new SyncAgent();
-                            agent.syncSD(BookListActivity.this,new File("/sdcard"));
+                            agent.syncSD(BookListActivity.this,new File("/sdcard"),false);
                         }
                     }).create();
 
@@ -464,19 +475,22 @@ public class BookListActivity extends ListActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                         int whichButton) {
-                                    File f;
+                                    final File f;
+                                    final boolean  otherType;
                                     if(whichButton<2){
                                         if(whichButton==0){
                                             f = new File("/sdcard");
+                                            otherType = false;
                                         }else{
                                             f = new File("/sdcard/ebooks");
+                                            otherType = true;
                                         }
                                         if(f.exists()){
                                             showDialog(PROGRESS_DIALOG);
                                             new Thread() {
                                                 public void run() {
                                                     SyncAgent syncAgent = new SyncAgent();
-                                                    syncAgent.syncSD(BookListActivity.this,new File("/sdcard"));
+                                                    syncAgent.syncSD(BookListActivity.this,f,otherType);
                                                     dismissDialog(PROGRESS_DIALOG);
                                                 }
                                             }.start();

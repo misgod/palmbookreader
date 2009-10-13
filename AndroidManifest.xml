@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.android.lee.pdbreader" android:versionCode="9"
-	android:versionName="1.0">
+	package="com.android.lee.pdbreader" android:versionCode="17"
+	android:versionName="1.2.3">
+	
+	<supports-screens android:smallScreens="true" 
+                  android:normalScreens="true" 
+                  android:largeScreens="true" 
+                  android:anyDensity="true"  />
+	
+	
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<provider android:name=".provider.PilotBookProvider"
 			android:authorities="PilotBookProvider" />
@@ -12,6 +19,10 @@
 		<activity android:name=".ColorListActivity"
 		android:configChanges="orientation|keyboardHidden" />
 		
+		      <activity android:name=".NoSDCardActivity"
+        android:configChanges="orientation|keyboardHidden" />
+    
+
 
 		<activity android:name="BookListActivity" android:label="@string/app_name"
 		android:configChanges="orientation|keyboardHidden">
