@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:gravity="center"
+	android:layout_height="fill_parent" >
+
+	<ImageView android:id="@+id/icon" android:layout_width="wrap_content"
+		android:src="@drawable/sd_card" android:layout_height="wrap_content">
+	</ImageView>
+
+	<TextView android:id="@+id/msg_text" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_marginTop="30dip"
+		android:text="@string/need_sd"
+		android:textColor="#ffFFFFFF" android:textSize="18sp" />
+
+</LinearLayout>
