@@ -3,8 +3,7 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 	<ScrollView android:id="@+id/scrollview"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:focusable="true"
-		android:fadingEdge="none">
+		android:focusable="true" android:fadingEdge="none">
 		<RelativeLayout android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
 
@@ -19,7 +18,7 @@
 				<Button android:id="@+id/next_button" android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:layout_centerVertical="true"
 					android:layout_alignParentRight="true" android:layout_marginRight="10dip"
-					android:focusable="false"  android:text="@string/next" />
+					android:focusable="false" android:text="@string/next" />
 				<TextView android:id="@+id/page_title"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:singleLine="true" android:gravity="center"
@@ -46,12 +45,12 @@
 						android:layout_height="wrap_content"
 						android:layout_alignParentLeft="true"
 						android:layout_centerVertical="true" android:layout_marginLeft="10dip"
-						android:focusable="false"  android:text="@string/prev" />
+						android:focusable="false" android:text="@string/prev" />
 					<Button android:id="@+id/next_button1" android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_centerVertical="true"
 						android:layout_alignParentRight="true" android:layout_marginRight="10dip"
-						android:focusable="false"  android:text="@string/next" />
+						android:focusable="false" android:text="@string/next" />
 					<TextView android:id="@+id/page_title1"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:singleLine="true" android:gravity="center"
@@ -69,6 +68,12 @@
 
 		</RelativeLayout>
 	</ScrollView>
+	
+	   <ProgressBar android:id="@+id/progress_read"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_centerInParent="true" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+	
 
 	<ZoomControls android:id="@+id/zoom_control"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
