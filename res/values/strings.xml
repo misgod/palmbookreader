@@ -30,7 +30,7 @@
 	<string name="text_checked">Set as my favorite</string>
 	<string name="dialog_edit">Edit book info</string>
 	<string name="dialog_about">About...</string>
-
+    <string name="need_sd">Please insert your SD</string>
 	<string name="choose_color">Which color is your favorite?</string>
 
 </resources>

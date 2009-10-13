@@ -46,8 +46,8 @@
 	</string-array>
 	
 		<string-array name="menu_sync_items">
-		<item>All In SD</item>
-		<item>Only "ebooks" Folder</item>
+		<item>All PDB In SD</item>
+		<item>PDB,TXT in "ebooks" Folder</item>
 		<item>Clear List</item>
 	</string-array>
 	
