@@ -1,13 +1,13 @@
-package com.android.lee.pdbreader.util;
+package com.misgod.pdbreader.util;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.android.lee.pdbreader.R;
-import com.android.lee.pdbreader.pdb.AbstractBookInfo;
-import com.android.lee.pdbreader.provider.BookColumn;
+import com.misgod.pdbreader.R;
+import com.misgod.pdbreader.pdb.AbstractBookInfo;
+import com.misgod.pdbreader.provider.BookColumn;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -33,11 +33,12 @@ public class SyncAgent {
                 AbstractBookInfo book = AbstractBookInfo.newBookInfo(f, -1);
                 try {
                     book.setEncode(encode);
-                    book.setFile(f);
+                    book.setFile(f,true);
                     ContentValues values = new ContentValues();
                     values.put(BookColumn.NAME, book.mName);
                     values.put(BookColumn.PATH, f.getAbsolutePath());
                     values.put(BookColumn.ENDCODE, book.mEncode);
+                    values.put(BookColumn.FORMAT, book.mFormat);
                     context.getContentResolver().insert(BookColumn.CONTENT_URI,
                             values);
                 } catch (IOException e) {
@@ -65,13 +66,17 @@ public class SyncAgent {
                                 || file.getName().toLowerCase()
                                         .endsWith(".pdb")
                                 || file.getName().toLowerCase()
-                                        .endsWith(".txt");
+                                        .endsWith(".txt")
+                        		|| file.getName().toLowerCase()
+                        				.endsWith(".updb");
                         // || file.getName().toLowerCase().endsWith(".htm")
                         // || file.getName().toLowerCase().endsWith(".html");
                     } else {
                         return file.isDirectory()
                                 || file.getName().toLowerCase()
-                                        .endsWith(".pdb");
+                                        .endsWith(".pdb")
+                        		|| file.getName().toLowerCase()
+                        			.endsWith(".updb");
                     }
 
                 } catch (RuntimeException e) {
@@ -80,14 +85,15 @@ public class SyncAgent {
                 }
             }
         });
-
+        
+        if(pdbList !=null){
         for (File p : pdbList) {
             if (p.isDirectory()) {
                 scanFile(p, otherType);
             } else {
                 pdbFileList.add(p);
             }
-
+        }
 
         }
 

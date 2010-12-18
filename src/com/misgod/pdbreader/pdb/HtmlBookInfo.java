@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader.pdb;
+package com.misgod.pdbreader.pdb;
 
 import android.text.Html;
 import android.text.Spannable;

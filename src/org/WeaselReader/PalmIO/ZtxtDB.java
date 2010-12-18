@@ -241,7 +241,7 @@ public class ZtxtDB extends PalmDB {
    */
   private Inflater           decompressor;
 
-
+  private String mEncode;
 
   /**
    * A collection of annotations.  An annotation is essentially a bookmark with
@@ -251,11 +251,12 @@ public class ZtxtDB extends PalmDB {
    * has a maximum size of 4096 bytes.
    */
   public class Annotations extends Bookmarks {
-
+	  
     /**
      * The text of each annotation in a zTXT.
      */
     private final String[] annotationText;
+
 
 
 
@@ -312,11 +313,11 @@ public class ZtxtDB extends PalmDB {
    * @throws DataFormatException if the input file is not a zTXT database (its
    *            typeID is not 'zTXT')
    */
-  public ZtxtDB(File inputFile) throws IOException, DataFormatException
+  public ZtxtDB(File pdbFile,String encode) throws IOException, DataFormatException
     {
       // Read in standard Palm PDB header values
-      super(inputFile);
-
+      super(pdbFile);
+      mEncode = encode;
       // Creators of a database may vary, but if the input file is a zTXT then
       // the type ID must be "zTXT".  If it's not then this probably isn't
       // really a zTXT.
@@ -624,7 +625,7 @@ public class ZtxtDB extends PalmDB {
       int resultLength = decompressor.inflate(output);
 
       // Create the output string
-      return new String(output, 0, resultLength, "UTF-8");
+      return new String(output, 0, resultLength, mEncode);
     }
 
 
@@ -794,125 +795,5 @@ public class ZtxtDB extends PalmDB {
     }
 
 
-
-  /**
-   * Prints values from the zTXT header and validates the CRC32 within the
-   * header. Can also print the bookmark and annotation indices as well as the
-   * annotation text.
-   * 
-   * @param args the first argument is the input filename, the second argument
-   *          is an optional boolean (0/1) toggling whether to print the
-   *          bookmark list, the third argument is an optional boolean (0/1)
-   *          toggling whether to print the annotation list, the fourth
-   *          argument is an option annotation number to print the full text
-   *          of, and the fifth argument is the number of a text record to
-   *          decompress and print.
-   */
-  public static void main(String[] args)
-    {
-      if (args.length < 1)
-        {
-          System.out.println(
-            "usage: ZtxtDB datafile.pdb [printBookmarks=0/1] "
-              + "[printAnnotations=0/1]\n    [annotationNumber] "
-              + "[textRecordNumber]");
-          System.exit(1);
-        }
-
-      File f = new File(args[0]);
-      ZtxtDB ztxt = null;
-      long compCRC32 = 0;
-      Bookmarks bookmarks = null;
-      Annotations annotations = null;
-      int annoIndex = -1;
-      String textRecord = null;
-
-      try
-        {
-          // Read all the useful data from a zTXT
-          ztxt = new ZtxtDB(f);
-
-          if (!ztxt.validateCRC32())
-            compCRC32 = ztxt.computeCRC32();
-          if ((args.length > 1) && (Integer.decode(args[1]) == 1))
-            bookmarks = ztxt.getBookmarks();
-          if ((args.length > 2) && (Integer.decode(args[2]) == 1))
-            annotations = ztxt.getAnnotations();
-          if (args.length > 3)
-            annoIndex = Integer.decode(args[3]);
-          if (args.length > 4)
-            {
-              ztxt.initializeDecompression();
-              textRecord = ztxt.readTextRecord(Integer.decode(args[4]));
-            }
-
-          ztxt.close();
-        }
-      catch (IOException e)
-        {
-          System.err.println("IOException: Error reading database: " + args[0]);
-          System.err.println(e.getMessage());
-          System.exit(3);
-        }
-      catch (DataFormatException e)
-        {
-          System.err.println("DataFormatException: Data error in input file \""
-              + args[0] + "\"");
-          System.err.println(e.getMessage());
-          System.exit(4);
-        }
-
-      System.out.println("         DB Name: \"" + ztxt.getDbName() + "\"");
-      System.out.println("   Total Records: " + ztxt.getNumRecords());
-      System.out.printf("    zTXT version: 0x%04X\n", ztxt.getzTXTVersion());
-      System.out.println("    Data Records: " + ztxt.getNumDataRecords());
-      System.out.println("       Data Size: " + ztxt.getDataSize());
-      System.out.println("      recordSize: " + ztxt.getRecordSize());
-      System.out.println("    numBookmarks: " + ztxt.getNumBookmarks());
-      System.out.println("  bookmarkRecord: " + ztxt.getBookmarkRecordIndex());
-      System.out.println("  numAnnotations: " + ztxt.getNumAnnotations());
-      System.out.println("annotationRecord: "
-          + ztxt.getAnnotationRecordIndex());
-      short flags = ztxt.getzTXTFlags();
-      System.out.printf("      zTXT flags: 0x%02X", flags);
-      if ((flags & ZTXT_RANDOMACCESS) != 0)
-        System.out.printf(" (ZTXT_RANDOMACCESS)");
-      System.out.printf("\n        Data CRC: 0x%08X", ztxt.getCRC32());
-      if (compCRC32 == 0)
-        System.out.printf(" (valid)\n");
-      else
-        System.out.printf(" (invalid - computed=0x%08X)\n", compCRC32);
-
-      if (bookmarks != null)
-        {
-          System.out.printf("Bookmark index (num = %d)\n", bookmarks.length);
-          for (int i = 0; i < bookmarks.length; i++)
-            System.out.printf("%3d  --  %8d  --  \"%s\"\n", i,
-                bookmarks.getOffset(i), bookmarks.getTitle(i));
-        }
-
-      if (annotations != null)
-        {
-          System.out.printf("Annotation index (num = %d)\n", annotations.length);
-          for (int i = 0; i < annotations.length; i++)
-            System.out.printf("%3d  --  %8d  --  \"%s\"\n", i,
-                annotations.getOffset(i), annotations.getTitle(i));
-        }
-
-      if (annoIndex != -1)
-        {
-          if (annotations == null)
-            System.err.println("Annotaion " + annoIndex
-                + ": no such annotation in this zTXT");
-          else
-            System.out.printf("Annotation #%d: \"%s\"\n", annoIndex,
-                annotations.getAnnotationText(annoIndex));
-        }
-
-      if (textRecord != null)
-        System.out.printf("Text record #%d:\n\"%s\"\n",
-            Integer.decode(args[4]), textRecord);
-
-      System.exit(0);
-    }
+  
 }

@@ -1,4 +1,10 @@
-package com.android.lee.pdbreader.util;
+package com.misgod.pdbreader.util;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -6,8 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Environment;
+import android.util.Log;
 
-import com.android.lee.pdbreader.NoSDCardActivity;
+import com.misgod.pdbreader.NoSDCardActivity;
 
 
 public class SDCardUtil {
@@ -65,6 +72,47 @@ public class SDCardUtil {
         String state = Environment.getExternalStorageState();
         return state.equals(Environment.MEDIA_SHARED);
     }
+    
+    
+    public static boolean copyFile(Context context,String source, File target) {
+        /* force write to sd */
+
+        BufferedInputStream in = null;
+        BufferedOutputStream out = null;
+
+        try {
+            in = new BufferedInputStream(context.getAssets().open(source),8192);
+            out = new BufferedOutputStream(new FileOutputStream(target));
+            byte[] tmpData = new byte[8192];
+            int c;
+            while ((c = in.read(tmpData)) != -1) {
+                out.write(tmpData, 0, c);
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG,e.getMessage(),e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {   
+                    e.printStackTrace();
+                }
+                in = null;
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                out = null;
+            }
+
+        }
+        return true;
+    }
+
     
     
 }

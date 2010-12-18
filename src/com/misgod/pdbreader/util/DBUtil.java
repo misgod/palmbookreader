@@ -1,10 +1,10 @@
-package com.android.lee.pdbreader.util;
+package com.misgod.pdbreader.util;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.android.lee.pdbreader.provider.BookColumn;
+import com.misgod.pdbreader.provider.BookColumn;
 
 import java.io.File;
 

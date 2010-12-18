@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader.pdb;
+package com.misgod.pdbreader.pdb;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public abstract class AbstractBookInfo {
         mName = name;
     }
     
-    public  abstract void setFile(File pdb) throws IOException;
+    public  abstract void setFile(File pdb,boolean headerOnly) throws IOException;
     
     public void setFormat(int format){
         mFormat = format;
@@ -63,6 +63,8 @@ public abstract class AbstractBookInfo {
     public static AbstractBookInfo newBookInfo(File f,long id){
        String name =  f.getName();
        if(name.toLowerCase().endsWith("pdb")){
+           return new PDBBookInfo(id);
+       }else if(name.toLowerCase().endsWith("updb")){
            return new PDBBookInfo(id);
        }else if(name.toLowerCase().endsWith("txt")){
            return new TxtBookInfo(id);

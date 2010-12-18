@@ -36,8 +36,9 @@
 
 	<string-array name="format">
 		<item>Uncompressed Text</item>
-		<item>Compressed Text</item>
+		<item>eReader Text</item>
 		<item>Palm Doc</item>
+		<item>Weasel Reader(zTxt)</item>
 	</string-array>
 
 	<string-array name="menu_dialog_items">
@@ -45,12 +46,18 @@
 		<item>Drop</item>
 	</string-array>
 	
-		<string-array name="menu_sync_items">
+	<string-array name="menu_sync_items">
 		<item>All PDB In SD</item>
 		<item>PDB,TXT in "ebooks" Folder</item>
 		<item>Clear List</item>
 	</string-array>
 	
+	<string-array name="menu_sync_items_plus">
+		<item>All PDB In SD</item>
+		<item>PDB,TXT in "ebooks" Folder</item>
+		<item>Clear List</item>
+		<item>Import from Old PalmBookReader</item>
+	</string-array>
 
 	<string-array name="sort_dialog_item">
 		<item>Name</item>

@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader.provider;
+package com.misgod.pdbreader.provider;
 
 
 
@@ -21,13 +21,13 @@ import java.util.HashMap;
  * Provides access to a database of notes. Each note has a title, the note
  * itself, a creation date and a modified data.
  */
-public class PilotBookProvider extends ContentProvider {
+public class PalmBookProvider extends ContentProvider {
 
-    private static final String TAG = "PilotBookProvider";
+    private static final String TAG = "PalmBookProvider";
     private static final String DATABASE_NAME = "pdbbooks.db";
     private static final int DATABASE_VERSION =11;
     private static final String TABLE_NAME = "books";
-    private static final String AUTGIRUTIES = "PilotBookProvider";
+    private static final String AUTGIRUTIES = "PalmBookProvider";
 
     private static final int BOOKS =0;
     private static final int BOOK_ID =2;
@@ -35,6 +35,7 @@ public class PilotBookProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher;
 
+    private boolean bulkInsertMode;
     /**
      * This class helps open, create, and upgrade the database file.
      */
@@ -65,7 +66,9 @@ public class PilotBookProvider extends ContentProvider {
             
             db.execSQL(createSql.toString());
 
-
+            
+            
+            
             
         }
 
@@ -177,12 +180,34 @@ public class PilotBookProvider extends ContentProvider {
         long rowId = db.insert(TABLE_NAME, "", values);
         if (rowId > 0) {
             Uri noteUri = ContentUris.withAppendedId(BookColumn.CONTENT_URI, rowId);
-            getContext().getContentResolver().notifyChange(noteUri, null);
+            if(!bulkInsertMode ){
+            	getContext().getContentResolver().notifyChange(noteUri, null);
+            }
+            
             return noteUri;
         }
 
         throw new SQLException("Failed to insert row into " + uri);
     }
+    
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+    	bulkInsertMode = true;
+        int numValues = values.length;
+        try{
+            for (int i = 0; i < numValues; i++) {
+                insert(uri, values[i]);
+            }
+        	
+        }finally{
+        	getContext().getContentResolver().notifyChange(BookColumn.CONTENT_URI, null);
+        	bulkInsertMode = false;
+        }
+       
+        return numValues;
+    }
+    
+    
+    
 
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {

@@ -5,8 +5,8 @@
 	<string name="default_charset">Default Charset</string>
 	<string name="menu_top">Top</string>
 	<string name="menu_charset">Charset</string>
-	<string name="menu_lock">Orientation UnLock</string>
-	<string name="menu_unlock">Orientation Lock</string>
+	<string name="menu_lock">Rotation Unlock</string>
+	<string name="menu_unlock">Rotation Lock</string>
 	<string name="menu_format">Format</string>
 	<string name="menu_sync">Sync SD</string>
 	<string name="menu_brightness">Brightness</string>
@@ -17,7 +17,7 @@
 	<string name="msg_sync_sd">Search pdb file in sd card...</string>
 	<string name="msg_brightness">Brightness of this book</string>
 	<string name="msg_expired">This app is expired, please upgrade...</string>
-	<string name="msg_store">The book's status is saved...</string>
+	<string name="msg_store">The book\'s status is saved...</string>
 	<string name="msg_need_folder">You need to makr an "ebooks" folder in you SD card. \nAnd put your pdb book in the folder.</string>
 
 
@@ -27,10 +27,17 @@
 	<string name="hint_filter">Filter...book or author</string>
 	<string name="text_author">author</string>
 	<string name="text_name">book name</string>
-	<string name="text_checked">Set as my favorite</string>
+	<string name="text_checked">On Top</string>
 	<string name="dialog_edit">Edit book info</string>
 	<string name="dialog_about">About...</string>
     <string name="need_sd">Please insert your SD</string>
 	<string name="choose_color">Which color is your favorite?</string>
 
+	<string name="jump_to">Jump To ...</string>
+    <string name="page">Jump to page %d</string>
+    
+    
+     <string name="help_title">PalmbookReader manual</string>
+    <string name="file_name">PalmbookReaderHelp.txt</string>
+    
 </resources>

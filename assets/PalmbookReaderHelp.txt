@@ -1,0 +1,41 @@
+PalmbookReader is a  simple and faster pdb/txt ebook reader, only for text.
+
+<<lastest updated>>
+1. Add app on SD
+2. Quick jump to specific page (click the top panel)
+3. fix a bug of the last read position
+4. drop book will also delete file
+
+<<support Format>>
+.pdb file (can't support iSilo format and image)
+.palm Doc
+.zTXT
+.eReader (inperfect)
+
+
+<<how to use>>
+1.choose a default charset
+2.put you books in "ebooks" SD
+3.menu->sync
+
+
+<<You should knows>>
+On List
+1.Edit book (Long press on list)
+2.Drop book(Long press on list)
+It will drop from the list and delete the file.
+
+On Reader
+1.press trackball(DPad) to move to top of page;
+2.you can use trackball(Dpad) or tap screen to scroll down.
+3.begin with the  last position you read.
+
+
+<<where to download ebooks>>
+*manybooks.net
+*www.handebooks.com
+*http://www.chuggnutt.com/ebooks.php
+
+if you know the other places, please advice us.
+
+misgod.tw@gmail.com

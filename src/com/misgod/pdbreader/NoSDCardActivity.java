@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader;
+package com.misgod.pdbreader;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -10,7 +10,7 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.widget.ImageView;
 
-import com.android.lee.pdbreader.util.SDCardUtil;
+import com.misgod.pdbreader.util.SDCardUtil;
 
 public class NoSDCardActivity extends Activity {
     private ImageView mIcon;

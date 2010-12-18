@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader;
+package com.misgod.pdbreader;
 
 import android.app.Dialog;
 import android.content.Context;

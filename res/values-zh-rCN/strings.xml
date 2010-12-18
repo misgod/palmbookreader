@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">PalmBook阅读器</string>
+	<string name="menu_text_size">字体大小</string>
+	<string name="default_charset">默认编码</string>
+	<string name="menu_top">到页首</string>
+	<string name="menu_charset">编码</string>
+	<string name="menu_lock">屏幕不固定</string>
+	<string name="menu_unlock">屏幕固定</string>
+	<string name="menu_format">格式</string>
+	<string name="menu_brightness">亮度</string>
+	<string name="menu_sync">同步SD</string>
+	<string name="menu_color">颜色</string>
+	<string name="msg_sync_sd">查找sd卡上的pdb文件...</string>
+	<string name="menu_sort">排序</string>
+	<string name="menu_drop_all">清除书柜</string>
+	<string name="menu_about">关于</string>
+	<string name="msg_brightness">亮度设置</string>
+	<string name="msg_expired">应用程序到期,请更新...</string>
+	<string name="msg_store">阅读状态已保存</string>
+	<string name="prev">上一页</string>
+	<string name="next">下一页</string>
+	<string name="sortby">排序依据...</string>
+	<string name="hint_filter">查找....书名或作者</string>
+	<string name="text_author">作者</string>
+	<string name="text_name">书名</string>
+	<string name="text_checked">置頂</string>
+	<string name="dialog_edit">编辑文本信息</string>
+	<string name="msg_need_folder">你需要在SD上创建"ebooks"目录,并把书放进去</string>
+	<string name="choose_color">你喜欢哪个颜色??</string>
+	<string name="need_sd">请插入SD卡</string>
+
+	<string name="jump_to">跳页 ...</string>
+	<string name="page">跳至第 %d 页 </string>
+
+     <string name="help_title">PalmBook阅读器 操作說明</string>
+    <string name="file_name">PalmbookReaderHelp_CHINESE.txt</string>
+</resources>

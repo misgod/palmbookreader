@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader.provider;
+package com.misgod.pdbreader.provider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -8,8 +8,10 @@ public final class BookColumn implements BaseColumns {
      * The content:// style URL for this table
      */
     public static final Uri CONTENT_URI = Uri
-            .parse("content://PilotBookProvider/books");
+            .parse("content://PalmBookProvider/books");
 
+    public static final Uri OLD_CONTENT_URI = Uri
+    .parse("content://PilotBookProvider/books");
 
     public static final String NAME = "name";
     public static final String AUTHOR = "author";

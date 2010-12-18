@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="format">
+		<item>一般文件</item>
+		<item>eReader文件</item>
+		<item>Palm Doc</item>
+		<item>Weasel Reader(zTxt)</item>
+	</string-array>
+
+	<string-array name="menu_dialog_items">
+		<item>编辑</item>
+		<item>清除</item>
+	</string-array>
+
+	<string-array name="menu_sync_items">
+		<item>SD卡全部PDB文件</item>
+		<item>只有"ebooks"目录(PDB,TXT)</item>
+		<item>清除列表</item>
+	</string-array>
+	<string-array name="menu_sync_items_plus">
+		<item>SD卡全部PDB文件</item>
+		<item>只有"ebooks"目录(PDB,TXT)</item>
+		<item>清除列表</item>
+		<item>从旧版汇入</item>
+	</string-array>
+
+	<string-array name="sort_dialog_item">
+		<item>书名</item>
+		<item>作者</item>
+		<item>最近阅读</item>
+		<item>文件路径</item>
+	</string-array>
+
+
+
+</resources>

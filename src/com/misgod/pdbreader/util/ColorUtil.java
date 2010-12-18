@@ -1,4 +1,4 @@
-package com.android.lee.pdbreader.util;
+package com.misgod.pdbreader.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

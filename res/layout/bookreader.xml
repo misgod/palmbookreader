@@ -28,7 +28,7 @@
 				<TextView android:id="@+id/page_index"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:singleLine="true" android:gravity="center"
-					android:layout_toLeftOf="@id/next_button" android:textColor="#ffffffff"
+					android:layout_toLeftOf="@id/next_button" android:textColor="@color/index_color"
 					android:layout_toRightOf="@id/prev_button" android:layout_below="@id/page_title" />
 			</RelativeLayout>
 
@@ -36,6 +36,7 @@
 				android:layout_height="fill_parent" android:orientation="vertical"
 				android:layout_below="@id/top_panel">
 				<TextView android:id="@+id/text" android:layout_width="fill_parent"
+				    android:lineSpacingMultiplier="1.15"
 					android:layout_height="fill_parent" android:paddingTop="10dip" />
 
 				<RelativeLayout android:layout_width="fill_parent"

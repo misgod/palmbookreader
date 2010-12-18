@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.android.lee.pdbreader" android:versionCode="17"
-	android:versionName="1.2.3">
+	package="com.misgod.pdbreader" android:versionCode="22"
+	android:versionName="1.6" 	android:installLocation="auto">
 	
 	<supports-screens android:smallScreens="true" 
                   android:normalScreens="true" 
@@ -10,8 +10,9 @@
 	
 	
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
-		<provider android:name=".provider.PilotBookProvider"
-			android:authorities="PilotBookProvider" />
+		<provider android:name=".provider.PalmBookProvider"
+			android:authorities="PalmBookProvider" 
+			/>
 
 		<activity android:name=".PalmBookReaderActivity"
 		android:configChanges="orientation|keyboardHidden" />
@@ -33,8 +34,10 @@
 		</activity>
 
 
-
-
+		
+		<uses-permission android:name="android.permission.SET_ORIENTATION" /> 
+		
+		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" />
 </manifest> 

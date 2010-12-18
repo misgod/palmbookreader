@@ -1,9 +1,4 @@
-package com.android.lee.pdbreader.pdb;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import org.WeaselReader.PalmIO.PalmDocDB;
+package com.misgod.pdbreader.pdb;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -16,6 +11,15 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.zip.DataFormatException;
 import java.util.zip.InflaterInputStream;
+
+import org.WeaselReader.PalmIO.PalmDocDB;
+import org.WeaselReader.PalmIO.ZtxtDB;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import com.misgod.pdbreader.util.FormatNotSupportException;
 
 /*
  * #define dmDBNameLength 32/* 31 chars + 1 null terminator
@@ -30,13 +34,17 @@ public class PDBBookInfo extends AbstractBookInfo {
     public int mCount;
     public int[] mRecodeOffset;
     public boolean isProgressing;
-
+    private int mType = TYPE_NORMAL;
+    
+    private static final int TYPE_NORMAL = 0;
+    private static final int TYPE_Hodoo = 1;
+    private static final int TYPE_EREADER = 2;
     public PDBBookInfo(long id){
         super(id);
     }
 
     @Override
-    public void setFile(File pdb) throws IOException {
+    public void setFile(File pdb,boolean headerOnly) throws IOException {
         mFile = pdb;
 
         mPage = 0;
@@ -45,16 +53,58 @@ public class PDBBookInfo extends AbstractBookInfo {
         byte[] nameByte = new byte[32];
         channel.map(MapMode.READ_ONLY, 0, 32).get(nameByte);
         mName = new String(nameByte, mEncode).replace('_',' ').trim();
+        
+        byte[] fourBytes = new byte[4];
+        channel.map(MapMode.READ_ONLY, 60, 4).get(fourBytes);
+        String type = new String(fourBytes);
+        channel.map(MapMode.READ_ONLY, 64, 4).get(fourBytes);
+        String creatorID = new String(fourBytes);
+        if(type.equals(PalmDocDB.PALMDOC_TYPE_ID) && creatorID.equals(PalmDocDB.PALMDOC_CREATOR_ID)){
+        	setFormat(2);
+        }else if(type.equals("PNRd") && creatorID.equals("PPrs")){
+        	mType = TYPE_EREADER;
+        	setFormat(1);
+        	setEncode("US-ASCII");
+    	}else if(type.equals("zTXT") && creatorID.equals("GPlm")){
+    		setFormat(3);
+    		setEncode("UTF-8");
+    	}else if(creatorID.equals("MTIT")){
+        	setEncode("Big5");
+        	mType = TYPE_Hodoo;
+        }else if(creatorID.equals("MTIU")){
+        	setEncode("UTF-16LE");
+        	mType = TYPE_Hodoo;
+        }else if(creatorID.equals("SilX")){
+        	throw new FormatNotSupportException("iSilo");
+        }
+        
+       	 mCount = channel.map(MapMode.READ_ONLY, 76, 2).asCharBuffer().get();
 
-        mCount = channel.map(MapMode.READ_ONLY, 76, 2).asCharBuffer().get();
-
-        int offset = 78;
+       	 
+       	int offset = 78;
+       	
+         if(mType == TYPE_EREADER){
+//        	 StringBuilder sb = new StringBuilder(Integer.toHexString(mCount));
+//        	 mCount = Integer.parseInt(sb.toString());
+        	 offset +=8;
+         }
+        
+        
         mRecodeOffset = new int[mCount];
         for (int i = 0; i < mCount; i++) {
             mRecodeOffset[i] = channel.map(MapMode.READ_ONLY, offset, 4)
                     .asIntBuffer().get();
             offset += 8;
         }
+        
+        if(mType == TYPE_Hodoo){
+        	byte[] fifityBytes = new byte[50];
+        	channel.map(MapMode.READ_ONLY, mRecodeOffset[0],
+        			fifityBytes.length).order(ByteOrder.BIG_ENDIAN).get(fifityBytes);
+        	String str = new String(fifityBytes, mEncode); 
+        	mName = str.substring(0, str.indexOf(27, 0)).trim(); //escape
+        }
+        
         
         channel.close();
         
@@ -79,10 +129,12 @@ public class PDBBookInfo extends AbstractBookInfo {
     public String getText() throws IOException, DataFormatException {
         isProgressing = true;
         try{
-            if(mFormat <2){
-                return getMyText();
-            }else{
+        	if(mFormat ==2){ 
                 return getPalmDoc();
+            }else if(mFormat ==3){ 
+            	return getZTXT();
+            }else{
+            	  return getMyText();
             }
         }finally{
             isProgressing = false;
@@ -91,7 +143,7 @@ public class PDBBookInfo extends AbstractBookInfo {
     
     public String getMyText() throws IOException {
         /* Record Header */
-        int recordBegin = 78 + 8 * mCount;
+       // int recordBegin = 78 + 8 * mCount;
 
         FileChannel channel = new FileInputStream(mFile).getChannel();
 
@@ -149,8 +201,17 @@ public class PDBBookInfo extends AbstractBookInfo {
         String result = palmDoc.readTextRecord(mPage);
         palmDoc.close();
         return result;
-
     }
+    
+    public String getZTXT() throws IOException, DataFormatException {
+    	ZtxtDB palmDoc = new ZtxtDB(mFile,mEncode);
+    	palmDoc.initializeDecompression();
+        mCount = palmDoc.getNumDataRecords();
+        String result = palmDoc.readTextRecord(mPage);
+        palmDoc.close();
+        return result;
+    }
+    
     
     /**
      * filter palm doc tag
@@ -174,9 +235,15 @@ public class PDBBookInfo extends AbstractBookInfo {
             body.replace(c, c+5,  String.valueOf(myChar));
         }
         String result = body.toString();
+        
         result = result.replaceAll("\\\\Sd=\\\".*\\\"|\\\\(Sd|Fn|Cn|[TwQq])=\".*\"|\\\\((Sp|Sb|Sd|Fn)|[pxcriuovtnsbqlBkI\\-])", "")
         .replace("\\\\", "\\");
-        return replaceString(result);
+
+        if(mType == TYPE_Hodoo){
+        	result = replaceString(result);
+        }
+        
+        return result;
         
     }
     

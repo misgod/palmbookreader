@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.lee.pdbreader;
+package com.misgod.pdbreader;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -32,8 +32,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.android.lee.pdbreader.util.ColorUtil;
-import com.android.lee.pdbreader.util.Constatnts;
+import com.misgod.pdbreader.util.ColorUtil;
+import com.misgod.pdbreader.util.Constatnts;
 
 /**
  * This example shows how to use choice mode on a list. This list is in
