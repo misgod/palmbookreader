@@ -46,7 +46,7 @@ public class PalmBookReaderActivity extends Activity implements
     protected static final String TAG = "PalmBookReaderActivity";
     private static final int MAX_TEXT_SIZE = 36;
     private static final int MIN_TEXT_SIZE = 8;
-    private static final int REQUEST_COLOR = 0x123;
+
 
     private ZoomControls zoomControl;
     private AbstractBookInfo mBook;
@@ -56,10 +56,12 @@ public class PalmBookReaderActivity extends Activity implements
     private View topPanel;
     private ScrollView scrollview;
 
-    private ColorUtil colorUtil;
     private float density;
     private Handler pHandler;
 
+    private boolean isTapScroll;
+    private boolean isVolumeScroll;
+    
     
     /** Called when the activity is first created. */
     @Override
@@ -144,8 +146,10 @@ public class PalmBookReaderActivity extends Activity implements
         mBody.setFocusable(false);
         mBody.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
-	            scrollview.smoothScrollBy(0, (scrollview.getHeight() - mBody
-	                    .getLineHeight()));
+				if(isTapScroll){
+					 scrollview.smoothScrollBy(0, (scrollview.getHeight() - mBody
+			                    .getLineHeight()));
+				}
 			}
         	
         });
@@ -242,8 +246,7 @@ public class PalmBookReaderActivity extends Activity implements
         mBody.setTextSize(pref.getFloat(Constatnts.TEXT_SIZE, mBody
                 .getTextSize())/density);
 
-        colorUtil = new ColorUtil(this);
-        changeColor(-1); // use pref
+
 
 
 
@@ -279,31 +282,50 @@ public class PalmBookReaderActivity extends Activity implements
             }
             scrollview.fullScroll(View.FOCUS_UP);
             return true;
-        }
-
+        }else if(isVolumeScroll &&  keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
+			 scrollview.smoothScrollBy(0, (scrollview.getHeight() - mBody
+		                    .getLineHeight()));
+			   return true;
+    	}else if(isVolumeScroll &&  keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+    		 scrollview.smoothScrollBy(0, -(scrollview.getHeight() - mBody
+	                    .getLineHeight()));
+    		   return true;
+    	}
 
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+			if(isVolumeScroll &&  keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
+				   return true;
+	  	 	}else if(isVolumeScroll &&  keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+	   		   return true;
+	  	 	}
+
+    	
+    	return super.onKeyUp(keyCode, event);
+    }
+    
 
     /* ---------------------menu---------------------------- */
     private static final int MENU_ZOOM = 0;
-    private static final int MENU_COLOR = 1;
-    private static final int MENU_CHARSET = 2;
-    private static final int MENU_ROTATAION = 3;
-    private static final int MENU_FORMAT = 4;
-    private static final int MENU_BRIGHTNESS = 5;
+    private static final int MENU_BRIGHTNESS = 1;
+    private static final int MENU_ROTATAION = 2;
+    private static final int MENU_FORMAT = 3;
+    private static final int MENU_CHARSET = 4;
+    private static final int MENU_SETTING = 5;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, MENU_ZOOM, MENU_ZOOM, getResources().getString(
                 R.string.menu_text_size));
-
-        menu.add(0, MENU_COLOR, MENU_COLOR, R.string.menu_color);
-        menu.add(0, MENU_CHARSET, MENU_CHARSET, R.string.menu_charset);
+        menu.add(0, MENU_BRIGHTNESS, MENU_BRIGHTNESS, R.string.menu_brightness);
         menu.add(0, MENU_ROTATAION, MENU_ROTATAION, "");
         menu.add(0, MENU_FORMAT, MENU_FORMAT, R.string.menu_format);
-        menu.add(0, MENU_BRIGHTNESS, MENU_BRIGHTNESS, R.string.menu_brightness);
+        menu.add(0, MENU_CHARSET, MENU_CHARSET, R.string.menu_charset);
+   		menu.add(0, MENU_SETTING, MENU_SETTING, R.string.menu_setting);
+        
         return true;
 
     }
@@ -328,12 +350,12 @@ public class PalmBookReaderActivity extends Activity implements
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == MENU_ZOOM) {
             zoomControl.show();
-        } else if (item.getItemId() == MENU_COLOR) {
-            Intent intent = new Intent(this, ColorListActivity.class);
-
-            startActivityForResult(intent, REQUEST_COLOR);
-            // scrollview.fullScroll(View.FOCUS_UP);
-            // mBody.moveCursorToVisibleOffset();
+//        } else if (item.getItemId() == MENU_COLOR) {
+//            Intent intent = new Intent(this, ColorListActivity.class);
+//
+//            startActivityForResult(intent, REQUEST_COLOR);
+//            // scrollview.fullScroll(View.FOCUS_UP);
+//            // mBody.moveCursorToVisibleOffset();
         } else if (item.getItemId() == MENU_CHARSET) {
             showDialog(ENCODE_DIALOG);
         } else if (item.getItemId() == MENU_ROTATAION) {
@@ -351,8 +373,10 @@ public class PalmBookReaderActivity extends Activity implements
             showDialog(FORMAT_DIALOG);
         } else if (item.getItemId() == MENU_BRIGHTNESS) {
             showDialog(BRIGHTNESS_DIALOG);
+        } else if (item.getItemId() == MENU_SETTING) {
+        	Intent intent = new Intent(this,SettingActivity.class);
+        	startActivity(intent);
         }
-
 
 
         return true;
@@ -396,8 +420,6 @@ public class PalmBookReaderActivity extends Activity implements
                             }finally{
                                 showProgressBarVisibility(false);
                             }
-                            
-                          
                         }
                     });
 
@@ -410,23 +432,21 @@ public class PalmBookReaderActivity extends Activity implements
                         }
                     });                  
                 }
-
             }
         });
-
-
-
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_COLOR && resultCode == Activity.RESULT_OK) {
-            int index = data.getIntExtra("DATA", -1);
-
-
-
-            changeColor(index);
-        }
-    }
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == REQUEST_COLOR && resultCode == Activity.RESULT_OK) {
+//            int index = data.getIntExtra("DATA", -1);
+//
+//            private void changeColor(int index) {
+//                int[] color = colorUtil.getColor(index); // use pref
+//            
+//            }
+//
+//        }
+//    }
 
 
     public final void showProgressBarVisibility(boolean visible) {
@@ -436,7 +456,32 @@ public class PalmBookReaderActivity extends Activity implements
     @Override
     protected void onResume() {
     	super.onResume();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      
+        
+        SharedPreferences pref = getSharedPreferences(Constatnts.PREF_TAG, Context.MODE_PRIVATE);
+
+        if(pref.getBoolean("pref_screenon", true)){
+        	  getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }else{
+        	 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        
+        if( pref.getBoolean("pref_fullscreen", false)){
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }else{
+        	getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        }
+
+        isTapScroll = pref.getBoolean("pref_tapscroll", true);
+        isVolumeScroll = pref.getBoolean("pref_volumescroll", false);        
+        
+        int colorIndex = pref.getInt(Constatnts.TEXT_COLOR, 0);
+        
+        Integer[] color = new ColorUtil(this).getColor(colorIndex);
+        mBody.setTextColor(color[0]);
+        mBody.setBackgroundColor(color[1]);
+        
     }
     
     @Override
@@ -444,22 +489,23 @@ public class PalmBookReaderActivity extends Activity implements
     	super.onPause();
     	  int y = Math.max(0, scrollview.getScrollY() - topPanel.getHeight());
           int line = y / mBody.getLineHeight();
-          int offset = mBody.getLayout().getLineStart(line);
-
-          Uri pdbUri = Uri.parse(BookColumn.CONTENT_URI + "/" + mBook.mID);
-          ContentValues values = new ContentValues();
-          // values.put(BookColumn.NAME, mBook.mName);
-          values.put(BookColumn.LAST_PAGE, mBook.mPage);
-          values.put(BookColumn.ENDCODE, mBook.mEncode);
-          values.put(BookColumn.FORMAT, mBook.mFormat);
-          values.put(BookColumn.LAST_OFFSET, offset);
-
-          Long now = Long.valueOf(System.currentTimeMillis());
-          values.put(BookColumn.CREATE_DATE, now);
-
-
-          int result = getContentResolver().update(pdbUri, values, null, null);
-    	
+      
+          if(mBody.getLayout() !=null){
+	       	   int offset = mBody.getLayout().getLineStart(line);
+	          Uri pdbUri = Uri.parse(BookColumn.CONTENT_URI + "/" + mBook.mID);
+	          ContentValues values = new ContentValues();
+	          // values.put(BookColumn.NAME, mBook.mName);
+	          values.put(BookColumn.LAST_PAGE, mBook.mPage);
+	          values.put(BookColumn.ENDCODE, mBook.mEncode);
+	          values.put(BookColumn.FORMAT, mBook.mFormat);
+	          values.put(BookColumn.LAST_OFFSET, offset);
+	
+	          Long now = Long.valueOf(System.currentTimeMillis());
+	          values.put(BookColumn.CREATE_DATE, now);
+	
+	
+	          int result = getContentResolver().update(pdbUri, values, null, null);
+          }
     	
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -579,11 +625,7 @@ public class PalmBookReaderActivity extends Activity implements
         return null;
     }
 
-    private void changeColor(int index) {
-        int[] color = colorUtil.getColor(index); // use pref
-        mBody.setTextColor(color[0]);
-        mBody.setBackgroundColor(color[1]);
-    }
+
 
     @Override
     public void onClick(View view) {

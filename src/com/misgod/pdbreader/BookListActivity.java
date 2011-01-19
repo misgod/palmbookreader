@@ -48,7 +48,7 @@ import com.misgod.pdbreader.util.SDCardUtil;
 import com.misgod.pdbreader.util.SyncAgent;
 
 public class BookListActivity extends ListActivity {
-	private static final float VERSION=1.6f;
+	private static final float VERSION=1.7f;
 	private static final String TAG = "BookListActivity";
 	private static final int ENCODE_DIALOG = 0;
 	private static final int PROGRESS_DIALOG = 1;

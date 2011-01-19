@@ -14,13 +14,13 @@
 
     <string-array name="menu_sync_items">
         <item>SD卡全部檔案</item>
-        <item>只有"ebooks"目錄(PDB,TXT)</item>
+        <item>只有"ebooks"目錄</item>
         <item>清除列表</item>
     </string-array>
 
     <string-array name="menu_sync_items_plus">
         <item>SD卡全部檔案</item>
-        <item>只有"ebooks"目錄(PDB,TXT)</item>
+        <item>只有"ebooks"目錄</item>
         <item>清除列表</item>
         <item>從舊版匯入</item>
     </string-array>

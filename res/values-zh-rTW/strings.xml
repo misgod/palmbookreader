@@ -8,6 +8,7 @@
     <string name="menu_lock">螢幕不固定</string>
     <string name="menu_unlock">螢幕固定</string>
     <string name="menu_format">格式</string>
+    <string name="menu_setting">設定</string>
     <string name="menu_brightness">亮度</string>
     <string name="menu_sync">同步SD</string>
     <string name="menu_color">顏色</string>
@@ -34,4 +35,29 @@
     <string name="page">跳至第 %d 頁 </string>
      <string name="help_title">PalmBook閱讀器 操作說明</string>
     <string name="file_name">PalmbookReaderHelp_CHINESE.txt</string>
+    
+    
+    <string name="setting_display">顯示設定</string>
+    <string name="setting_scroll">翻頁設定</string>
+    <string name="setting_fullscreen">全螢幕閱讀</string>
+    <string name="setting_fullscreen_desc">閱讀時會隱藏系統狀態列</string>
+    
+    <string name="setting_screenon">關閉螢幕休眠</string>
+    <string name="setting_screenon_desc">閱讀時關閉螢幕逾時功能</string>
+        
+     <string name="setting_pickcolor">顏色與背景</string>
+    <string name="setting_pickcolor_desc">選擇你喜歡的配色</string>
+    
+    <string name="setting_tapscroll">輕點翻頁</string>
+    <string name="setting_tapscroll_desc">閱讀時輕點螢幕自動下滑一頁</string>
+    
+    <string name="setting_volume">音量鍵翻頁 </string>
+    <string name="setting_volume_desc">閱讀時使用音量鍵上或下滑一頁</string>
+    
+    
+    
+    
+    
+    
+    
 </resources>

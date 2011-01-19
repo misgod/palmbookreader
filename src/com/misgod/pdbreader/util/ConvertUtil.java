@@ -1,7 +1,12 @@
 package com.misgod.pdbreader.util;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.mozilla.universalchardet.UniversalDetector;
+
+import android.util.Log;
 
 public class ConvertUtil {
 
@@ -29,4 +34,33 @@ public class ConvertUtil {
         time1 /= 10000;
         return new Date(time1 - interval);
     }
+    
+    
+    
+    public static String guessCharset(String fileName) throws IOException{
+    	 byte[] buf = new byte[4096];
+    	    java.io.FileInputStream fis = new java.io.FileInputStream(fileName);
+
+
+    	    UniversalDetector detector = new UniversalDetector(null);
+
+
+    	    int nread;
+    	    while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
+    	      detector.handleData(buf, 0, nread);
+    	    }
+    	    detector.dataEnd();
+
+    	    String encoding = detector.getDetectedCharset();
+    	    if (encoding != null) {
+    	      Log.d("ConvertUtil",fileName+" detected encoding = " + encoding);
+    	    } else {
+    	    	   Log.d("ConvertUtil","No encoding detected = " + encoding);
+    	    }
+
+    	    detector.reset();
+    	    return encoding;
+    }
+    
+    
 }

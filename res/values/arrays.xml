@@ -47,13 +47,13 @@
 	</string-array>
 	
 	<string-array name="menu_sync_items">
-		<item>All PDB In SD</item>
+		<item>All PDB,TXT In SD</item>
 		<item>PDB,TXT in "ebooks" Folder</item>
 		<item>Clear List</item>
 	</string-array>
 	
 	<string-array name="menu_sync_items_plus">
-		<item>All PDB In SD</item>
+		<item>All PDB,TXT In SD</item>
 		<item>PDB,TXT in "ebooks" Folder</item>
 		<item>Clear List</item>
 		<item>Import from Old PalmBookReader</item>

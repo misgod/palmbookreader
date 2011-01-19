@@ -1,10 +1,10 @@
 PalmbookReader is a  simple and faster pdb/txt ebook reader, only for text.
 
 <<lastest updated>>
-1. Add app on SD
-2. Quick jump to specific page (click the top panel)
-3. fix a bug of the last read position
-4. drop book will also delete file
+1. add reader setting
+2. fix bug
+3. txt file charset auto-detection
+
 
 <<support Format>>
 .pdb file (can't support iSilo format and image)

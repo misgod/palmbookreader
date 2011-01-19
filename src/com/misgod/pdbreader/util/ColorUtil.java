@@ -1,21 +1,49 @@
 package com.misgod.pdbreader.util;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class ColorUtil {
     private Context mContext;
-    public static final int[] foregroungColor = new int[]{
-        0xffcccccc, 0xffEEEEEE,0xffffffff,0xff000000,0xffcc0000,0xffFFFFBB,0xffFF0084,0xffB0E2FF,0xffB02B2C,0xff330000,
-        0xff00CC00,0xff000033,0xff001100,0xffCCFFFF,0xffC3C3B4,0xff3C0F00
-    };
+    private static final ArrayList<Integer[]> ColorList = new ArrayList<Integer[]>();
     
-    public static final int[] backgroungColor = new int[]{
-        0xff000000,0xffffffff,0xffFFF0F0,0xffEEEEEE,0xffdddddd,0xff36393D,0xfff9f7ed,0xffFFFFB4,
-        0xff4096EE,0xffC3D9FF, 0xffF0FFF0,0xffFFFF88,0xffE1F0B4,0xff330000,0xffCCCCFF,0xffCCFFFF, 
-        0xffFF96F0
-    };
+    static{
+    	//black background
+    	ColorList.add(new Integer[]{0xffffffff,0xff000000});
+    	ColorList.add(new Integer[]{0xffeeeeee,0xff000000});
+    	ColorList.add(new Integer[]{0xffcccccc,0xff000000});
+    	ColorList.add(new Integer[]{0xffaaaaaa,0xff000000});
+    	ColorList.add(new Integer[]{0xff888888,0xff000000});
+    	ColorList.add(new Integer[]{0xff666666,0xff000000});
+    	ColorList.add(new Integer[]{0xff444444,0xff000000});   	
+    	//gray background
+    	ColorList.add(new Integer[]{0xffffffff,0xff333333});
+    	ColorList.add(new Integer[]{0xffeeeeee,0xff333333});
+    	ColorList.add(new Integer[]{0xffcccccc,0xff333333});
+    	ColorList.add(new Integer[]{0xffaaaaaa,0xff333333});
+    	ColorList.add(new Integer[]{0xff888888,0xff333333});
+    	ColorList.add(new Integer[]{0xff666666,0xff333333});
+    	ColorList.add(new Integer[]{0xff444444,0xff333333});   	
+    	
+    	//light gray background
+    	ColorList.add(new Integer[]{0xff666666,0xffcccccc});
+    	ColorList.add(new Integer[]{0xff444444,0xffcccccc});
+    	ColorList.add(new Integer[]{0xff222222,0xffcccccc});
+    	ColorList.add(new Integer[]{0xff111111,0xffcccccc});
+      	ColorList.add(new Integer[]{0xff000000,0xffcccccc});
+    	
+    	
+    	//white background
+    	ColorList.add(new Integer[]{0xff666666,0xffffffff});
+    	ColorList.add(new Integer[]{0xff444444,0xffffffff});
+    	ColorList.add(new Integer[]{0xff222222,0xffffffff});
+    	ColorList.add(new Integer[]{0xff111111,0xffffffff});
+      	ColorList.add(new Integer[]{0xff000000,0xffffffff});
+    }
+    
+
     
     public ColorUtil(Context context){
         mContext = context;
@@ -23,14 +51,14 @@ public class ColorUtil {
     
     
     public int getColorSize(){
-        return foregroungColor.length * backgroungColor.length;
+        return ColorList.size();
     }
     
     /**
      * colorIndex: -1, read from share pref
      * @return 2-length, 0 foreground, 1 background
      */
-    public int[] getColor(int colorIndex){
+    public Integer[] getColor(int colorIndex){
             int index=0;
             if(colorIndex<0){
                 SharedPreferences pref =mContext.getSharedPreferences(Constatnts.PREF_TAG, Context.MODE_PRIVATE);
@@ -40,16 +68,10 @@ public class ColorUtil {
                 index = colorIndex;
             }
             
-            int bgIndex = index /foregroungColor.length;
-            int fgIndex = index % foregroungColor.length;
-            if(fgIndex == foregroungColor.length){
-                fgIndex=0;
-            }
+
             
             
-            int[] result = new int[2];
-            result[0]  = foregroungColor[fgIndex];
-            result[1] = backgroungColor[bgIndex];
+            Integer[] result = ColorList.get(index);
             return result;
     }
     

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.misgod.pdbreader" android:versionCode="22"
-	android:versionName="1.6" 	android:installLocation="auto">
+	package="com.misgod.pdbreader" android:versionCode="23"
+	android:versionName="1.7" 	android:installLocation="auto">
 	
 	<supports-screens android:smallScreens="true" 
                   android:normalScreens="true" 
@@ -22,7 +22,12 @@
 		
 		      <activity android:name=".NoSDCardActivity"
         android:configChanges="orientation|keyboardHidden" />
+
+
+      <activity android:name=".SettingActivity"
+        android:configChanges="orientation|keyboardHidden" />
     
+
 
 
 		<activity android:name="BookListActivity" android:label="@string/app_name"
